@@ -1,6 +1,6 @@
 <template lang="">
   <div
-    class="bg-fixed absolute top-0 left-0 right-0 bottom-0 bg-gradient-to-r from-purple-500 to-pink-500"
+    class=""
   >
     <div class="max-w-7xl mx-auto">
       <div class="relative">
@@ -10,7 +10,7 @@
           >
             <div class="flex items-center gap-2">
               <div>
-                <img class="w-16" src="logo.png" alt="" />
+                <img class="w-16" src="/logo.png" alt="" />
               </div>
               <div class="flex flex-col">
                 <div class="text-2xl text-white">
@@ -33,6 +33,7 @@
       <Navbar />
       <div class="border-b-2"></div>
       <Nuxt />
+      <Footer />
     </div>
   </div>
 </template>

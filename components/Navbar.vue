@@ -1,5 +1,5 @@
 <template lang="">
-  <div >
+  <div>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid flex">
         <div class="navbar-brand">
@@ -30,7 +30,7 @@
                 ><i class="bi bi-check2-square"></i> เลือกกิจกรรม</NuxtLink
               >
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <NuxtLink class="nav-link" to="/news"
                 ><i class="bi bi-bell"></i> ข่าวประกาศ</NuxtLink
               >
@@ -39,12 +39,14 @@
               <NuxtLink class="nav-link" to="/contact"
                 ><i class="bi bi-telephone"></i> ติดต่อครู</NuxtLink
               >
-            </li>
-            <li v-if="$auth.user" class="nav-item">
-              <NuxtLink class="nav-link" to="/manage"
-                ><i class="bi bi-card-checklist"></i> จัดการ</NuxtLink
-              >
-            </li>
+            </li> -->
+            <div v-if="$auth.user">
+              <li v-if="$auth.user.level == 'a'" class="nav-item">
+                <NuxtLink class="nav-link" to="/manage"
+                  ><i class="bi bi-card-checklist"></i> จัดการ</NuxtLink
+                >
+              </li>
+            </div>
           </ul>
           <form class="flex flex-col md:flex-row gap-2 justify-center">
             <NuxtLink v-if="!$auth.user" to="/login" class="pr-3 btn">

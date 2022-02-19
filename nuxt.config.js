@@ -26,7 +26,12 @@ export default {
     'bootstrap-icons/font/bootstrap-icons.css',
   ],
 
-  serverMiddleware: ['~/api/auth', '~/api/getpass', '~/api/club'],
+  serverMiddleware: [
+    '~/api/auth',
+    '~/api/getpass',
+    '~/api/club',
+    // '~/api/recaptcha',
+  ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
@@ -43,12 +48,15 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
     'bootstrap-vue/nuxt',
+    'vue-sweetalert2/nuxt',
     '@nuxtjs/dotenv',
     [
       '@nuxtjs/recaptcha',
       {
         siteKey: process.env.RECAPTCHA_SITE_KEY,
-        version: 3
+        version: 2,
+        // size: 'invisible',
+        // language:"en"
       },
     ],
   ],

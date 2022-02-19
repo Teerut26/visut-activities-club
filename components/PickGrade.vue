@@ -39,6 +39,7 @@
 
 <script>
 export default {
+  props: ['data'],
   data() {
     return {
       options: ['ม.1', 'ม.2', 'ม.3', 'ม.4', 'ม.5', 'ม.6'],
@@ -54,6 +55,11 @@ export default {
     value: function (val) {
       this.$emit('onPickGrade', val)
     },
+  },
+  mounted() {
+    if (this.data) {
+      this.value = this.data
+    }
   },
 }
 </script>

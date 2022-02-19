@@ -6,6 +6,7 @@
 
 <script>
 export default {
+  props: ['data'],
   data() {
     return {
       value: [],
@@ -15,6 +16,11 @@ export default {
     value: function (val) {
       this.$emit('onPickOwner', val)
     },
+  },
+  mounted() {
+    if (this.data) {
+      this.value = this.data
+    }
   },
 }
 </script>

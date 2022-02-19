@@ -13,7 +13,7 @@
     <b-row>
       <b-col lg="6" class="my-1">
         <b-form-group
-          label="Sort"
+          label="เลือกคอลัมน์"
           label-for="sort-by-select"
           label-cols-sm="3"
           label-align-sm="right"
@@ -50,7 +50,7 @@
 
       <b-col lg="6" class="my-1">
         <b-form-group
-          label="Filter"
+          label="ค้นหา"
           label-for="filter-input"
           label-cols-sm="3"
           label-align-sm="right"
@@ -62,12 +62,12 @@
               id="filter-input"
               v-model="filter"
               type="search"
-              placeholder="Type to Search"
+              placeholder="สิ่งที่อยู่ในตาราง"
             ></b-form-input>
 
             <b-input-group-append>
               <b-button :disabled="!filter" @click="filter = ''"
-                >Clear</b-button
+              >ล้าง</b-button
               >
             </b-input-group-append>
           </b-input-group>
@@ -76,7 +76,7 @@
 
       <b-col sm="5" md="6" class="my-1">
         <b-form-group
-          label="Per page"
+          label="จำนวนต่อหนึ่งหน้า"
           label-for="per-page-select"
           label-cols-sm="6"
           label-cols-md="4"
@@ -107,76 +107,84 @@
     </b-row>
 
     <!-- Main table element -->
-    <b-table
-      :items="items"
-      :fields="fields"
-      :current-page="currentPage"
-      :per-page="perPage"
-      :filter="filter"
-      :filter-included-fields="filterOn"
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      :sort-direction="sortDirection"
-      stacked="md"
-      :responsive="true"
-      show-empty
-      small
-      @filtered="onFiltered"
-    >
-      <template #cell(owner)="row">
-        <div class="flex gap-1">
-          <span
-            v-for="(item, index) in row.value"
-            :key="index"
-            class="badge bg-success"
-            >{{ item }}</span
+    <div>
+      <b-table
+        :items="items"
+        :fields="fields"
+        :current-page="currentPage"
+        :per-page="perPage"
+        :filter="filter"
+        :filter-included-fields="filterOn"
+        :sort-by.sync="sortBy"
+        :sort-desc.sync="sortDesc"
+        :sort-direction="sortDirection"
+        stacked="md"
+        :responsive="true"
+        show-empty
+        small
+        @filtered="onFiltered"
+      >
+        <template #cell(owner)="row">
+          <div class="flex gap-1">
+            <span
+              v-for="(item, index) in row.value"
+              :key="index"
+              class="badge bg-info"
+              >{{ item }}</span
+            >
+          </div>
+        </template>
+        <template #cell(grade)="row">
+          <div class="flex gap-1">
+            <span
+              v-for="(item, index) in row.value"
+              :key="index"
+              class="badge bg-info"
+              >{{ item }}</span
+            >
+          </div>
+        </template>
+
+        <template #cell(open)="row">
+          <span v-if="row.value === 1" class="badge bg-success"
+            >เปิดรับสมัคร</span
           >
-        </div>
-      </template>
-      <template #cell(grade)="row">
-        <div class="flex gap-1">
-          <span
-            v-for="(item, index) in row.value"
-            :key="index"
-            class="badge bg-success"
-            >{{ item }}</span
+          <span v-if="row.value === 0" class="badge bg-danger"
+            >ปิดรับสมัคร</span
           >
-        </div>
-      </template>
+        </template>
 
-      <template #cell(actions)="row">
-        <b-button
-          size="sm"
-          @click="info(row.item, row.index, $event.target)"
-          class="mr-1"
-        >
-          ดูข้อมูลทั้งหมด
-        </b-button>
-        <b-button size="sm" @click="row.toggleDetails">
-          {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
-        </b-button>
-      </template>
+        <template #cell(actions)="row">
+          <div class="flex flex-nowrap">
+            <b-button
+              size="sm"
+              @click="info(row.item, row.index, $event.target)"
+              class="mr-1"
+            >
+              แก้ไข
+            </b-button>
+            <b-button
+              @click="deleteList(row.item)"
+              size="sm"
+              class="mr-1"
+              variant="danger"
+            >
+              ลบ
+            </b-button>
+          </div>
+        </template>
+      </b-table>
+    </div>
 
-      <template #row-details="row">
-        <b-card>
-          <ul>
-            <li v-for="(value, key) in row.item" :key="key">
-              {{ key }}: {{ value }}
-            </li>
-          </ul>
-        </b-card>
-      </template>
-    </b-table>
-
-    <!-- Info modal -->
     <b-modal
       :id="infoModal.id"
       :title="infoModal.title"
-      ok-only
-      @hide="resetInfoModal"
+      @hidden="getData()"
+      hide-footer
     >
-      <pre>{{ infoModal.content }}</pre>
+      <EditClubForm :initData="infoModal.content" />
     </b-modal>
+    {{ dataSelectModal }}
   </b-container>
 </template>
 
@@ -196,12 +204,12 @@ export default {
           sortable: true,
         },
         { key: 'max', label: 'รับสูงสุด (คน)', sortable: true },
-        { key: 'open', label: 'open', sortable: true },
+        { key: 'open', label: 'สถานะ', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
       totalRows: 1,
       currentPage: 1,
-      perPage: 5,
+      perPage: 10,
       pageOptions: [5, 10, 15, { value: 100, text: 'Show a lot' }],
       sortBy: '',
       sortDesc: false,
@@ -213,6 +221,7 @@ export default {
         title: '',
         content: '',
       },
+      dataSelectModal: null,
     }
   },
   computed: {
@@ -232,9 +241,36 @@ export default {
   },
   methods: {
     info(item, index, button) {
-      this.infoModal.title = `Row index: ${index}`
-      this.infoModal.content = JSON.stringify(item, null, 2)
+      this.infoModal.title = item.title
+      this.infoModal.content = item
       this.$root.$emit('bv::show::modal', this.infoModal.id, button)
+    },
+    onEditClubForm(val) {
+      if (val.length === 0) return
+      this.dataSelectModal = val
+    },
+    async deleteList(item) {
+      const { id } = item
+      console.log(id)
+      let result = await this.$swal({
+        title: 'ต้องการลบหรือไม่ ?',
+        text: item.title,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'ลบ',
+      })
+      if (result.isConfirmed) {
+        let { data } = await this.$axios.post('/api/club/delete', {
+          id,
+        })
+        if (data.error) return
+        this.$swal.fire({
+          title: 'ลบสำเร็จ',
+          icon: 'success',
+          timer: 700,
+        })
+        this.getData()
+      }
     },
     resetInfoModal() {
       this.infoModal.title = ''
@@ -248,6 +284,9 @@ export default {
     async getData() {
       let { data } = await this.$axios.get('/api/club')
       this.items = data.data
+    },
+    handleOk() {
+      console.log(this.dataSelectModal)
     },
   },
 }

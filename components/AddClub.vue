@@ -4,7 +4,7 @@
       เพิ่มข้อมูลสำเร็จ
     </div>
     <form class="flex flex-col gap-3" v-on:submit="submit">
-      <div class="flex gap-2">
+      <div class="flex flex-col md:flex-row gap-2">
         <div class="w-full">
           <label class="form-label">ชื่อชุมนุม</label>
           <input v-model="title" type="text" class="form-control" />
@@ -26,6 +26,8 @@
         <label class="form-label">รับสมัคร</label>
         <PickGrade v-on:onPickGrade="onPickGrade($event)" />
       </div>
+      <div class="w-full flex justify-center"><recaptcha /></div>
+
       <button type="submit" class="btn btn-primary">Submit</button>
     </form>
   </div>
@@ -60,31 +62,37 @@ export default {
     },
     async submit(e) {
       e.preventDefault()
-      console.log(5555)
-      if (
-        this.title.length === 0 ||
-        this.location.length === 0 ||
-        this.max === 0 ||
-        this.grade.length === 0
-      )
-        return
-      const { data } = await this.$axios({
-        method: 'post',
-        url: '/api/club/add',
-        data: {
-          title: this.title,
-          owner: this.owner,
-          location: this.location,
-          max: this.max,
-          grade: this.grade,
-        },
-      })
-      if (data.error) return
-      this.success = true
-      this.clearForm()
-      setTimeout(() => {
-        this.success = false
-      }, 1500)
+      try {
+        const token = await this.$recaptcha.getResponse()
+        if (
+          this.title.length === 0 ||
+          this.location.length === 0 ||
+          this.max === 0 ||
+          this.grade.length === 0
+        )
+          return
+        const res = await this.$axios({
+          method: 'post',
+          url: '/api/club/add',
+          data: {
+            title: this.title,
+            owner: this.owner,
+            location: this.location,
+            max: this.max,
+            grade: this.grade,
+            token,
+          },
+        })
+        if (res.data.error) return
+        this.success = true
+        this.clearForm()
+        setTimeout(() => {
+          this.success = false
+        }, 1500)
+        await this.$recaptcha.reset()
+      } catch (error) {
+        console.log('Login error:', error)
+      }
     },
   },
 }
