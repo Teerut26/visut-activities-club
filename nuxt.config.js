@@ -26,7 +26,7 @@ export default {
     'bootstrap-icons/font/bootstrap-icons.css',
   ],
 
-  serverMiddleware: ['~/api/auth'],
+  serverMiddleware: ['~/api/auth', '~/api/getpass', '~/api/club'],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [],
@@ -43,6 +43,14 @@ export default {
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
     'bootstrap-vue/nuxt',
+    '@nuxtjs/dotenv',
+    [
+      '@nuxtjs/recaptcha',
+      {
+        siteKey: process.env.RECAPTCHA_SITE_KEY,
+        version: 3
+      },
+    ],
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios

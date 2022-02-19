@@ -1,12 +1,9 @@
 export const state = () => ({
-  counter: 0,
+  lists_select: [],
 })
 
 export const mutations = {
-  increase(state) {
-    state.counter++
-  },
-  decrease(state) {
-    state.counter--
+    AddList(state) {
+    state.lists_select.push("5555")
   },
 }

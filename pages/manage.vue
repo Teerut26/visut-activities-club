@@ -1,23 +1,21 @@
 <template lang="">
   <div class="p-3 bg-light">
-      
-    <form class="flex flex-col gap-3">
-      <div>
-        <label for="exampleInputEmail1" class="form-label">ชื่อชุมนุม</label>
-        <input type="email" class="form-control" />
-      </div>
-      <div>
-        <label for="exampleInputEmail1" class="form-label">ชื่อชุมนุม</label>
-        <input type="email" class="form-control" />
-      </div>
-
-      <button type="submit" class="btn btn-primary">Submit</button>
-    </form>
+    <div>
+      <b-tabs content-class="mt-3">
+        <b-tab title="เพิ่มชุมนุม" active>
+          <AddClub />
+        </b-tab>
+        <b-tab title="รายการชุมนุม" >
+          <ClubsListAdmin />
+        </b-tab>
+      </b-tabs>
+    </div>
   </div>
 </template>
 <script>
 export default {
   layout: 'WithNavbar',
+  middleware: 'auth'
 }
 </script>
 <style lang=""></style>
