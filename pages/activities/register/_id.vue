@@ -54,13 +54,28 @@
           >
           <b-form-input
             v-model="student_code"
-            :state="nameState"
+            :state="studentCodeState"
             placeholder="รหัสประจำตัวนักเรียน"
             type="number"
             trim
           ></b-form-input>
           <b-form-invalid-feedback id="input-live-feedback">
             รหัสนักเรียนต้องมี 5 หลัก
+          </b-form-invalid-feedback>
+        </div>
+        <div>
+          <label for="exampleInputEmail1" class="form-label"
+            >รหัสบัตรประชาชน</label
+          >
+          <b-form-input
+            v-model="citizen_id"
+            :state="citizenIdState"
+            placeholder="รหัสบัตรประชาชน"
+            type="number"
+            trim
+          ></b-form-input>
+          <b-form-invalid-feedback id="input-live-feedback">
+            รหัสบัตรประชาชนต้องมี 13 หลัก
           </b-form-invalid-feedback>
         </div>
         <div class="self-center">
@@ -92,11 +107,15 @@ export default {
   data() {
     return {
       student_code: '',
+      citizen_id:''
     }
   },
   computed: {
-    nameState() {
+    studentCodeState() {
       return this.student_code.length === 5 ? true : false
+    },
+    citizenIdState() {
+      return this.citizen_id.length === 13 ? true : false
     },
   },
   methods: {
@@ -116,8 +135,10 @@ export default {
         let { data } = await this.$axios.post(`/api/club/register`, {
           student_code: this.student_code,
           select_club_id: this.data.id,
+          citizen_id: this.citizen_id,
           token,
         })
+
         if (data.error) {
           if (data.message === 'Invalid token') {
             location.reload()
@@ -131,6 +152,7 @@ export default {
         this.$swal({
           title: 'ยืนยันสำเร็จ',
           html: `<h5>รายละเอียดการยืนยัน</h5>
+<p>ชื่อ: ${data.data.first_name} ${data.data.last_name}</p>
 <p>รหัสนักเรียน: ${this.student_code}</p>
 <p>กิจกรรม: ${this.data.title}</p>
 <p>สถานที่: ${this.data.location}</p>

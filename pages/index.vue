@@ -1,6 +1,6 @@
 <template>
   <div>
-      555
+      ภาพรวมการสมัคร
   </div>
 </template>
 

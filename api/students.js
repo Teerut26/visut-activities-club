@@ -4,7 +4,6 @@ import cookieParser from 'cookie-parser'
 import jwt from 'express-jwt'
 import axios from 'axios'
 import { knex } from '../config/database'
-import { getSutudentFromID } from './modal/clubs'
 const app = express()
 
 app.use(cookieParser())
@@ -14,35 +13,42 @@ app.use(
   jwt({
     secret: process.env.JWT_SECRET,
     algorithms: ['sha1', 'RS256', 'HS256'],
-  }).unless({
-    path: ['/api/club', /^\/api\/club\/detail\/.*/, '/api/club/register'],
   })
 )
 
 app.post('/add', async (req, res) => {
-  const { title, owner, location, max, grade, token } = req.body
+  const {
+    student_code,
+    citizen_id,
+    first_name,
+    last_name,
+    grade,
+    room,
+    token,
+  } = req.body
   const { level } = req.user
   try {
     if (level === 'a') {
-      let { data } = await axios.get(
-        `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`
-      )
-      if (data.success) {
-        await knex('clubs').insert({
-          title: title,
-          owner: JSON.stringify(owner),
-          location: location,
-          max: max,
-          grade: JSON.stringify(grade),
+    //   let { data } = await axios.get(
+    //     `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`
+    //   )
+    //   if (data.success) {
+        await knex('students').insert({
+          student_code,
+          citizen_id,
+          first_name,
+          last_name,
+          grade,
+          room,
           timestamp: new Date().toISOString(),
         })
         res.json({
           error: false,
           message: 'success',
         })
-      } else {
-        return res.json({ error: true, message: 'Invalid token' })
-      }
+    //   } else {
+    //     return res.json({ error: true, message: 'Invalid token' })
+    //   }
     } else {
       return res.json({ error: true, message: "you don't have permission." })
     }
@@ -56,29 +62,21 @@ app.post('/add', async (req, res) => {
 
 app.get('/', async (req, res) => {
   try {
-    let result = await knex.select().table('clubs')
-    // let test = await getSutudentFromID(1)
-    // console.log(test);
-
-    // console.log(test);
-    let data_result = {
+    let result = await knex.select().table('students')
+    res.json({
       error: false,
       message: 'success',
-      data: await Promise.all(
-        result.map(async (item) => ({
-          id: item.id,
-          title: item.title,
-          owner: JSON.parse(item.owner),
-          location: item.location,
-          max: item.max,
-          grade: JSON.parse(item.grade),
-          members_count: await getSutudentFromID(item.id),
-          open: item.open,
-          timestamp: item.timestamp,
-        }))
-      ),
-    }
-    res.json(data_result)
+      data: result.map((item) => ({
+        assessment_results: item.assessment_results,
+        // citizen_id: item.citizen_id,
+        name: { first_name: item.first_name, last_name: item.last_name },
+        grade: { grade: item.grade, room: item.room },
+        id: item.id,
+        select_club_id: item.select_club_id,
+        student_code: item.student_code,
+        timestamp: item.timestamp,
+      })),
+    })
   } catch (error) {
     res.json({
       error: true,
@@ -116,7 +114,7 @@ app.get('/detail/:id', async (req, res) => {
 })
 
 app.post('/register', async (req, res) => {
-  let { student_code, select_club_id, citizen_id, token } = req.body
+  let { student_code, select_club_id, token } = req.body
   if (student_code.length === 0 || select_club_id.length === 0) {
     return res.json({ error: true, message: 'บางอย่างไม่ครบ' })
   }
@@ -125,27 +123,16 @@ app.post('/register', async (req, res) => {
       `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`
     )
     if (data.success) {
-      let result = await knex('students').where({ student_code, citizen_id })
-
-      if (result.length === 0) {
-        return res.json({ error: true, message: 'ไม่พบข้อมูล' })
-      }
-
-      if (result[0].select_club_id !== 0) {
+      let result = await knex('students').where({ student_code })
+      if (result.length !== 0) {
         return res.json({ error: true, message: 'สมัครไปแล้ว' })
       }
 
-      await knex('students')
-        .where({ student_code, citizen_id })
-        .update({ select_club_id })
+      await knex('students').insert({ student_code, select_club_id })
 
       res.json({
         error: false,
         message: 'success',
-        data: {
-          first_name: result[0].first_name,
-          last_name: result[0].last_name,
-        },
       })
     } else {
       return res.json({ error: true, message: 'Invalid token' })
@@ -219,6 +206,6 @@ app.post('/update', async (req, res) => {
 
 // -- export app --
 export default {
-  path: '/api/club',
+  path: '/api/students',
   handler: app,
 }

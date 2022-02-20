@@ -5,8 +5,11 @@
         <b-tab title="เพิ่มชุมนุม" active>
           <AddClub />
         </b-tab>
-        <b-tab title="รายการชุมนุม" >
+        <b-tab title="รายการชื่อชุมนุม" >
           <ClubsListAdmin />
+        </b-tab>
+        <b-tab title="รายชื่อนักเรียน" >
+          <StudentsListAdmin />
         </b-tab>
       </b-tabs>
     </div>

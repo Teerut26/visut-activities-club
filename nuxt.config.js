@@ -30,6 +30,8 @@ export default {
     '~/api/auth',
     '~/api/getpass',
     '~/api/club',
+    '~/api/students',
+    '~/api/info',
     // '~/api/recaptcha',
   ],
 

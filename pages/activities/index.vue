@@ -13,6 +13,10 @@
             <div class="font-bold">{{ item.max }} คน</div>
           </div>
           <div class="flex gap-1">
+            <div class="text-gray-500">รับแล้ว:</div>
+            <div class="font-bold">{{ item.members_count }} คน</div>
+          </div>
+          <div class="flex gap-1">
             <div class="text-gray-500">สถานที่:</div>
             <div class="font-bold">{{ item.location }}</div>
           </div>
