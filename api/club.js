@@ -104,7 +104,14 @@ app.get('/detail/:id', async (req, res) => {
         grade: JSON.parse(item.grade),
         open: item.open,
         timestamp: item.timestamp,
-        students: result_students,
+        students: result_students.map((student) => ({
+            first_name:student.first_name,
+            last_name:student.last_name,
+            room:student.room,
+            grade:student.grade,
+            student_code:student.student_code,
+            assessment_results:student.assessment_results,
+        })),
       })),
     })
   } catch (error) {
@@ -131,7 +138,7 @@ app.post('/register', async (req, res) => {
         return res.json({ error: true, message: 'ไม่พบข้อมูล' })
       }
 
-      if (result[0].select_club_id !== 0) {
+      if (result[0].select_club_id !== 0 ) {
         return res.json({ error: true, message: 'สมัครไปแล้ว' })
       }
 

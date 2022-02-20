@@ -14,17 +14,25 @@
       </div>
     </div>
     <div class="table-responsive">
-      <table class="table table-striped table-hover table-bordered">
+      <table class="table  table-hover ">
         <thead class="">
           <tr>
             <th scope="col">ลำดับ</th>
             <th scope="col">รหัสนักเรียน</th>
+            <th scope="col">ชื่อ-สกุล</th>
+            <th scope="col">ระดับชั้น</th>
+            <th scope="col">ผลการประเมิน</th>
+            <th scope="col">หมายเหตุ</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="(item, index) in datas.students" :key="index">
             <th>{{ index + 1 }}</th>
             <td>{{ item.student_code }}</td>
+            <td>{{ item.first_name }} {{ item.last_name }}</td>
+            <td>ม.{{ item.grade }}/{{ item.room }}</td>
+            <td>{{ item.assessment_results }}</td>
+            <td>{{ item.assessment_results }}</td>
           </tr>
         </tbody>
       </table>
