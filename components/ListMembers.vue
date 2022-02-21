@@ -31,8 +31,10 @@
             <td>{{ item.student_code }}</td>
             <td>{{ item.first_name }} {{ item.last_name }}</td>
             <td>ม.{{ item.grade }}/{{ item.room }}</td>
-            <td>{{ item.assessment_results }}</td>
-            <td>{{ item.assessment_results }}</td>
+            <td>
+                <div class="text-red-500" v-if="item.assessment_results===0">-</div>
+            </td>
+            <td>{{ item.info }}</td>
           </tr>
         </tbody>
       </table>

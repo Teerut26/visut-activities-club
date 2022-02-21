@@ -111,6 +111,7 @@ app.get('/detail/:id', async (req, res) => {
             grade:student.grade,
             student_code:student.student_code,
             assessment_results:student.assessment_results,
+            info:student.info,
         })),
       })),
     })

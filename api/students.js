@@ -24,31 +24,23 @@ app.post('/add', async (req, res) => {
     last_name,
     grade,
     room,
-    token,
   } = req.body
   const { level } = req.user
   try {
     if (level === 'a') {
-    //   let { data } = await axios.get(
-    //     `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`
-    //   )
-    //   if (data.success) {
-        await knex('students').insert({
-          student_code,
-          citizen_id,
-          first_name,
-          last_name,
-          grade,
-          room,
-          timestamp: new Date().toISOString(),
-        })
-        res.json({
-          error: false,
-          message: 'success',
-        })
-    //   } else {
-    //     return res.json({ error: true, message: 'Invalid token' })
-    //   }
+      await knex('students').insert({
+        student_code,
+        citizen_id,
+        first_name,
+        last_name,
+        grade,
+        room,
+        timestamp: new Date().toISOString(),
+      })
+      res.json({
+        error: false,
+        message: 'success',
+      })
     } else {
       return res.json({ error: true, message: "you don't have permission." })
     }
@@ -85,71 +77,11 @@ app.get('/', async (req, res) => {
   }
 })
 
-app.get('/detail/:id', async (req, res) => {
-  let { id } = req.params
-  try {
-    let result = await knex.select().table('clubs').where('id', id)
-    let result_students = await knex('students').where({ select_club_id: id })
-    res.json({
-      error: false,
-      message: 'success',
-      data: result.map((item) => ({
-        id: item.id,
-        title: item.title,
-        owner: JSON.parse(item.owner),
-        location: item.location,
-        max: item.max,
-        grade: JSON.parse(item.grade),
-        open: item.open,
-        timestamp: item.timestamp,
-        students: result_students,
-      })),
-    })
-  } catch (error) {
-    res.json({
-      error: true,
-      message: error.message,
-    })
-  }
-})
-
-app.post('/register', async (req, res) => {
-  let { student_code, select_club_id, token } = req.body
-  if (student_code.length === 0 || select_club_id.length === 0) {
-    return res.json({ error: true, message: 'บางอย่างไม่ครบ' })
-  }
-  try {
-    let { data } = await axios.get(
-      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`
-    )
-    if (data.success) {
-      let result = await knex('students').where({ student_code })
-      if (result.length !== 0) {
-        return res.json({ error: true, message: 'สมัครไปแล้ว' })
-      }
-
-      await knex('students').insert({ student_code, select_club_id })
-
-      res.json({
-        error: false,
-        message: 'success',
-      })
-    } else {
-      return res.json({ error: true, message: 'Invalid token' })
-    }
-  } catch (error) {
-    res.json({
-      error: true,
-      message: error.message,
-    })
-  }
-})
-
 app.post('/delete', async (req, res) => {
   let { id } = req.body
   if (req.user.level === 'a') {
     try {
-      await knex.select().table('clubs').where('id', id).del()
+      await knex.select().table('students').where('id', id).del()
       res.json({
         error: false,
         message: 'success',
@@ -166,33 +98,30 @@ app.post('/delete', async (req, res) => {
 })
 
 app.post('/update', async (req, res) => {
-  const { id, title, owner, location, max, grade, open } = req.body
+  const {
+    id,
+    student_code,
+    citizen_id,
+    first_name,
+    last_name,
+    grade,
+    room,
+  } = req.body
   const { level } = req.user
   if (level === 'a') {
-    // let { data } = await axios.get(
-    //   `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`
-    // )
     try {
-      //   if (data.success) {
-      await knex
-        .select()
-        .table('clubs')
-        .where('id', id)
-        .update({
-          title,
-          owner: JSON.stringify(owner),
-          location,
-          max,
-          grade: JSON.stringify(grade),
-          open,
-        })
+      await knex.select().table('students').where('id', id).update({
+        student_code,
+        citizen_id,
+        first_name,
+        last_name,
+        grade,
+        room,
+      })
       res.json({
         error: false,
         message: 'success',
       })
-      //   } else {
-      //     return res.json({ error: true, message: 'Invalid token' })
-      //   }
     } catch (error) {
       res.json({
         error: true,

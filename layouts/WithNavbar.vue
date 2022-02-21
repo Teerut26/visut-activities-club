@@ -2,7 +2,7 @@
   <div
     class=""
   >
-    <div class="max-w-7xl mx-auto">
+    <div class="max-w-7xl mx-auto shadow-md">
       <div class="relative">
         <div class="hidden sm:block">
           <div
@@ -31,7 +31,7 @@
         />
       </div>
       <Navbar />
-      <div class="border-b-2"></div>
+      <div class=""></div>
       <Nuxt />
       <Footer />
     </div>

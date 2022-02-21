@@ -1,7 +1,8 @@
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
-    title: 'nuxt-tailwind-vuex',
+    title:
+      'ระบบลงทะเบียนกิจกรรมชุมนุมออนไลน์ โรงเรียนวิสุทธรังษี จังหวัดกาญจนบุรี',
     htmlAttrs: {
       lang: 'en',
     },
@@ -11,17 +12,23 @@ export default {
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
+    link: [{ rel: 'icon', type: 'image/x-icon', href: '/images/logo.svg' }],
     script: [
       {
-        src: 'https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js',
+        src: '/js/bootstrap.bundle.min.js',
       },
     ],
+    bodyAttrs: {
+      class:
+        'bg-fixed bg-center bg-no-repeat bg-cover bg-body',
+    },
   },
+  loading: '~/components/loading.vue',
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
     '@/assets/css/main.css',
+    '@/assets/css/adminlte.min.css',
     'bootstrap/dist/css/bootstrap.min.css',
     'bootstrap-icons/font/bootstrap-icons.css',
   ],

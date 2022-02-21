@@ -1,10 +1,11 @@
 <template lang="">
   <div class="bg-light flex flex-col items-center py-2 border-t-2">
-    <div>
-      Copyright © {{ new Date().getFullYear() }}
+    <div class="text-center">
+      Copyright © {{ new Date().getFullYear("en-EN") }}
       ระบบลงทะเบียนกิจกรรมชุมนุมออนไลน์
     </div>
-    <div>พัฒนาโดย Teerut</div>
+    <div>โรงเรียนวิสุทธรังษี จังหวัดกาญจนบุรี</div>
+    <div>พัฒนาโดย Teerut Srithongdee M.6/3</div>
   </div>
 </template>
 <script>

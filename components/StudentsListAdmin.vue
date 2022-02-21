@@ -264,7 +264,7 @@ export default {
         confirmButtonText: 'ลบ',
       })
       if (result.isConfirmed) {
-        let { data } = await this.$axios.post('/api/club/delete', {
+        let { data } = await this.$axios.post('/api/students/delete', {
           id,
         })
         if (data.error) return
